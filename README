@@ -1,0 +1,44 @@
+Goals calendar
+==============
+
+Goals calendar is a Seinfeld calendar written in Google's Go.
+Mark a red check each day you have done something for your task,
+and try to have the longer streak.
+
+> _Don't break the chain_
+  Jerry Seinfeld
+
+TODO
+----
+
+* @[ ]@ Learn Google's go
+* @[ ]@ Assemble Web.go, Gostache and Go-Redis
+* @[ ]@ Show one calendar
+* @[ ]@ Make possible to click on a day to toggle its check
+* @[ ]@ Let user create account by twitter-OAuth
+* @[ ]@ Check permissions
+* @[ ]@ CSS
+* @[ ]@ Rest API
+* @[ ]@ Crontab + script to fetch checks from an hastag on twitter
+* @[ ]@ Export a widget
+* @[ ]@ Deploy it on a public server
+* @[ ]@ Documentation: install, dependencies
+
+
+Links
+-----
+
+* "Jerry Seinfeld's Productivity Secret":[http://lifehacker.com/281626/jerry-seinfelds-productivity-secret]
+* "The Go Programming Language":[http://golang.org/]
+* "Web.Go framework":[http://www.getwebgo.com/]
+* "Gostache":[http://github.com/hoisie/gostache]
+* "Go-Redis":[http://github.com/hoisie/Go-Redis]
+* "Redis":[http://github.com/antirez/redis]
+
+
+Credits
+-------
+
+Copyright (c) 2010 Bruno Michel <brmichel@free.fr>
+Licence GNU AGPL V3+
+
