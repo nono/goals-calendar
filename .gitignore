@@ -1,2 +1,5 @@
 vendor
 log/*.log
+*.8
+*.6
+*.out
