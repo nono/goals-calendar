@@ -1,31 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"gostache"
-	"log"
-	"redis"
+	"nono/model"
 	"web"
 )
 
-func redis_name(key string) string {
-	spec := redis.DefaultSpec().Db(13); /* WTF 13 means? */
-	client, e := redis.NewSynchClientWithSpec (spec)
-	if e != nil { log.Stderr ("failed to create the client", e); return "failed" }
-	// client.Set("foo", strings.Bytes("bar"))
-	value, e := client.Get(key)
-	if e!= nil { log.Stderr ("error on Get", e); return "failed 2" }
-	return fmt.Sprintf("%s", value)
-}
+var m *model.Model
 
 func hello(ctx *web.Context, val string) {
 	filename := "templates/hello.mustache"
-	world := map[string]string{"name": redis_name(val)}
+	// m.Set("toto", "foobar")
+	world := map[string]string{"name": m.Get(val)}
 	output, _ := gostache.RenderFile(filename, world)
 	ctx.WriteString(output)
 }
 
 func main() {
+	m = model.NewModel("goals-calendar", 13)
 	web.SetStaticDir("public")
 	web.Get("/(.*)", hello)
 	web.Run("0.0.0.0:9999")
