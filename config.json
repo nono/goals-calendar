@@ -1,7 +1,8 @@
 {
-	"db": "13",
-	"appname": "goals-calendar",
+	"database":  "13",
+	"appname":   "goals-calendar",
 	"interface": "127.0.0.1",
-	"port": "9999",
-	"docroot": "public"
+	"port":      "9999",
+	"docroot":   "public",
+	"templates": "templates"
 }
