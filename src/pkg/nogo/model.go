@@ -1,7 +1,8 @@
-package model
+package nogo
 
 import (
 	"redis"
+	"strconv"
 	"strings"
 )
 
@@ -13,11 +14,14 @@ type Model struct {
 
 const keySeparator = ":"
 
-func NewModel(name string, db int) *Model {
-	s := redis.DefaultSpec().Db(db)
+func NewModel(name string) *Model {
+	fn := GetConfig("appname") + keySeparator + name
+	db := GetConfig("db")
 	m := new(Model)
-	m.db = db
-	m.name = name
+	m.db, _ = strconv.Atoi(db)
+	s := redis.DefaultSpec().Db(m.db)
+	// TODO if e != nil ...
+	m.name = fn
 	m.client, _ = redis.NewSynchClientWithSpec(s)
 	// TODO
 	// if e != nil { log.Stderr ("failed to create the client", e); return "failed" }

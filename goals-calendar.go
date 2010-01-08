@@ -2,14 +2,14 @@ package main
 
 import (
 	"gostache"
-	"nono/model"
+	"nogo"
 	"web"
 )
 
-var m *model.Model
+var m *nogo.Model
 
 func hello(ctx *web.Context, val string) {
-	filename := "templates/hello.mustache"
+	filename := "app/templates/hello.mustache"
 	// m.Set("toto", "foobar")
 	world := map[string]string{"name": m.Get(val)}
 	output, _ := gostache.RenderFile(filename, world)
@@ -17,9 +17,9 @@ func hello(ctx *web.Context, val string) {
 }
 
 func main() {
-	m = model.NewModel("goals-calendar", 13)
-	web.SetStaticDir("public")
-	web.Get("/(.*)", hello)
-	web.Run("0.0.0.0:9999")
+	nogo.Initialize()
+	nogo.Get("/(.*)", hello)
+	nogo.Start()
+	m = nogo.NewModel("calendar")
 }
 

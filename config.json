@@ -1,0 +1,7 @@
+{
+	"db": "13",
+	"appname": "goals-calendar",
+	"interface": "127.0.0.1",
+	"port": "9999",
+	"docroot": "public"
+}
