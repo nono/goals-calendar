@@ -7,23 +7,30 @@ func main() {
 	/* Initialization */
 	/******************/
 	goldorak.Initialize("config.json")
-	// Calendar := goldorak.NewModel("calendar")
+	//calendar := goldorak.NewModel("calendar")
 
 	/***********/
 	/* Actions */
 	/***********/
 
+	// Layout
+	goldorak.DefaultLayout(func(action *goldorak.Action) {
+		action.Assign("favicon", goldorak.StaticUrl("favicon.png"))
+		action.Assign("stylesheet", goldorak.StaticUrl("styles.css"))
+		action.Template("layout")
+	})
+
 	// Hello world
-	goldorak.Get("/hello", func(action goldorak.Action) {
+	goldorak.Get("/hello", func(action *goldorak.Action) {
 		action.Assign("name", "World!")
-		//action.Assign("name", Calendar.Find("hello").Get("world"))
-		action.Layout("")
-		action.Render("hello")
+		//action.Assign("name", calendar.Find("hello").Get("world"))
+		//action.NoLayout()
+		action.Template("hello")
 	});
 
 	// Show a calendar
-	goldorak.Get("/calendars/(.*)", func(action goldorak.Action) {
-		action.Render("calendar")
+	goldorak.Get("/calendars/(.*)", func(action *goldorak.Action) {
+		action.Template("calendar")
 	});
 
 	/************/
