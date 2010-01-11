@@ -20,7 +20,7 @@ TODO
     [ ] Check permissions
     [ ] CSS
     [ ] Rest API
-    [ ] Crontab + script to fetch checks from an hastag on twitter
+    [ ] Crontab + script to fetch checks from an hashtag on twitter
     [ ] Export a widget
     [ ] Deploy it on a public server
     [ ] Documentation: install, dependencies
@@ -31,10 +31,7 @@ Links
 
     http://lifehacker.com/281626/jerry-seinfelds-productivity-secret Jerry Seinfeld's Productivity Secret
     http://golang.org/ The Go Programming Language
-    http://www.getwebgo.com/ Web.Go framework
-    http://github.com/hoisie/gostache Gostache
-    http://github.com/hoisie/Go-Redis Go-Redis
-    http://github.com/antirez/redis Redis
+    http://github.com/nono/Goldorak.Go Goldorak Go mini framework
 
 
 Credits

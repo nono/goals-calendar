@@ -21,15 +21,15 @@ func main() {
 	})
 
 	// Hello world
-	goldorak.Get("/hello", func(action *goldorak.Action) {
-		action.Assign("name", "World!")
+	goldorak.Get("/hello", func(action *goldorak.Action, params []string) {
+		action.Assign("name", params[0])
 		//action.Assign("name", calendar.Find("hello").Get("world"))
 		//action.NoLayout()
 		action.Template("hello")
 	});
 
 	// Show a calendar
-	goldorak.Get("/calendars/(.*)", func(action *goldorak.Action) {
+	goldorak.Get("/calendars/.*", func(action *goldorak.Action, params []string) {
 		action.Template("calendar")
 	});
 
