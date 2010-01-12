@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"goldorak"
 	"strconv"
+	"time"
 )
 
 
@@ -25,22 +27,23 @@ func main() {
 		action.Template("layout")
 	})
 
-	// Hello world
-	goldorak.Get("/hello", func(action *goldorak.Action, params []string) {
-		action.Assign("name", "world")
-		action.NoLayout()
-		action.Template("hello")
-	});
-
 	// Show a calendar
 	goldorak.Get("/.*(/[0-9]+/[0-9]+)?", func(action *goldorak.Action, params []string) {
-		cal     := calendar.Find(params[0])
+		var year int64
+		var month int
+		cal := calendar.Find(params[0])
 		if cal != nil {
 			// Show the calendar
-			year, _ := strconv.Atoi(params[0])
-			month,_ := strconv.Atoi(params[1])
+			if (len(params) > 2) {
+				year, _ = strconv.Atoi64(params[0])
+				month,_ = strconv.Atoi(params[1])
+			} else {
+				now := time.LocalTime()
+				year, month = now.Year, now.Month
+			}
 			action.Assign("name", cal.Get("title"))
-			action.Assign("not_used", string(year + month))
+			action.Assign("year", fmt.Sprint("%04d", year))
+			action.Assign("month", fmt.Sprint("%02d", month))
 			action.Template("calendar")
 		} else {
 			// TODO create a new calendar
