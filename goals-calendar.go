@@ -46,8 +46,16 @@ func main() {
 			action.Assign("month", fmt.Sprint("%02d", month))
 			action.Template("calendar")
 		} else {
-			// TODO create a new calendar
+			action.Assign("name", params[0])
+			action.Template("new_calendar")
 		}
+	});
+
+	// Create a calendar
+	goldorak.Post("/calendars", func(action *goldorak.Action, params []string) {
+		slug := goldorak.Parameterize(params[0])
+		cal := calendar.Create(slug)
+		action.Redirect("/" + cal.Param)
 	});
 
 	/************/
