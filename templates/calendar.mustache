@@ -1,0 +1,28 @@
+<h2>{{name}}</h2>
+<div class="bar">
+	<h3>{{month}} / {{year}}</h3>
+	<a href="{{prev_url}}">&rarr;</a>
+	<a href="{{next_url}}">&larr;</a>
+</div>
+<table>
+	<tr>
+		<th>Lu</th>
+		<th>Ma</th>
+		<th>Me</th>
+		<th>Je</th>
+		<th>Ve</th>
+		<th>Sa</th>
+		<th>Di</th>
+	</tr>
+	{{#rows}}
+	<tr>
+		{{#days}}
+		<td class="{{type}}">{{number}}</td>
+		{{/days}}
+	</tr>
+	{{/rows}}
+</table>
+<div class="bar">
+	<span>Série en cours : {{current}}</span>
+	<span>Plus longue série : {{longest}}</span>
+</div>
