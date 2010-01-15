@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"goldorak"
 	"strconv"
 	"strings"
@@ -11,41 +10,32 @@ var goal *goldorak.Model
 
 
 // Show the calendar
-func showCalendar(action *goldorak.Action, goal *goldorak.Instance, params []string) {
-	cal := NewCal()
-	if (len(params) > 2) {
-		cal.Year, _ = strconv.Atoi(params[1])
-		cal.Month,_ = strconv.Atoi(params[2])
-	}
-	prev := cal.PrevMonth()
-	next := cal.NextMonth()
-	current, _ := strconv.Atoi(goal.Get("current"))
-	longest, _ := strconv.Atoi(goal.Get("longest"))
-	action.Assign("name", goal.Get("title"))
-	action.Assign("year", fmt.Sprint("%04d", cal.Year))
-	action.Assign("month", fmt.Sprint("%02d", cal.Month))
-	action.Assign("prev_url", "/" + params[0] + "/" + prev.String())
-	action.Assign("next_url", "/" + params[0] + "/" + next.String())
-	action.Assign("current", goldorak.Pluralize(current, "jour"))
-	action.Assign("longest", goldorak.Pluralize(longest, "jour"))
-	action.Assign("rows", "") // FIXME
+func showCalendar(action *goldorak.Action, cal *Calendar) {
+	action.Assign("name", cal.Title())
+	action.Assign("year", cal.Year)
+	action.Assign("month", cal.MonthAsText())
+	action.Assign("prev_url", "/" + cal.Goal.Param + "/" + cal.PrevMonth().String())
+	action.Assign("next_url", "/" + cal.Goal.Param + "/" + cal.NextMonth().String())
+	action.Assign("current", goldorak.Pluralize(cal.CurrentStreak(), "jour"))
+	action.Assign("longest", goldorak.Pluralize(cal.LongestStreak(), "jour"))
+	action.Assign("rows", false) // FIXME
 	action.Template("calendar")
 }
 
 // Form for creating a new goal
-func newGoal(action *goldorak.Action, param string) {
+func newGoal(action *goldorak.Action, param string, public bool) {
 	action.Assign("name", param)
-	action.Template("new_calendar")
+	action.Assign("public", public)
+	action.Template("new_goal")
 }
 
 // Create a goal
-func createGoal(action *goldorak.Action, name string) {
-	s := goldorak.Parameterize(name)
-	g := goal.Create(s)
+func createGoal(action *goldorak.Action, name string, public bool) {
+	g := goal.Create(name)
 	g.Set("name", name)
 	g.Set("current", "0")
 	g.Set("longest", "0")
-	action.Redirect("/" + s)
+	action.Redirect("/" + g.Param)
 }
 
 func main() {
@@ -71,19 +61,30 @@ func main() {
 	goldorak.Get("/.*(/[0-9]+/[0-9]+)?", func(action *goldorak.Action, params []string) {
 		g := goal.Find(params[0])
 		if g != nil {
-			showCalendar(action, g, params)
+			cal := NewCal(g)
+			if (len(params) > 2) {
+				cal.Year, _ = strconv.Atoi(params[1])
+				cal.Month,_ = strconv.Atoi(params[2])
+			}
+			showCalendar(action, cal)
 		} else {
-			newGoal(action, params[0])
+			newGoal(action, params[0], true)
 		}
 	});
 
 	// Create a calendar
 	goldorak.Post("/calendars", func(action *goldorak.Action, params []string) {
-		name := strings.TrimSpace(params[0])
+		p_public := action.Param("public")
+		public   := len(p_public) > 0 && p_public[0] == "1"
+		p_name   := action.Param("name")
+		name     := ""
+		if len(p_name) > 0 {
+			name = strings.TrimSpace(p_name[0])
+		}
 		if name != "" {
-			createGoal(action, name)
+			createGoal(action, name, public)
 		} else {
-			newGoal(action, "")
+			newGoal(action, name, public)
 		}
 	});
 
