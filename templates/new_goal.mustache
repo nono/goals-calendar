@@ -1,0 +1,15 @@
+<h2>Nouvel objectif</h2>
+<form action="/calendars" method="post">
+	<div class="field">
+		<label for="name">Objectif :</label>
+		<input type="text" id="name" name="name" required="required" value="{{name}}" />
+	</div>
+	<div class="field">
+		<input type="checkbox" id="public" name="public" value="1" {{#public}}checked="checked" {{/public}}/>
+		<label for="public">Je souhaite rendre cet objectif public</label>
+	</div>
+	<div class="action">
+		<input type="submit" value="Créer" />
+		<a href="/">Annuler</a>
+	</div>
+</form
