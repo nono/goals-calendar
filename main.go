@@ -5,31 +5,30 @@ import (
 	"goldorak"
 	"strconv"
 	"strings"
-	"time"
 )
 
-// TODO create a type calendar
 var goal *goldorak.Model
 
 
 // Show the calendar
 func showCalendar(action *goldorak.Action, goal *goldorak.Instance, params []string) {
-	var year, month int
+	cal := NewCal()
 	if (len(params) > 2) {
-		year, _ = strconv.Atoi(params[1])
-		month,_ = strconv.Atoi(params[2])
-	} else {
-		now := time.LocalTime()
-		year, month = int(now.Year), now.Month
+		cal.Year, _ = strconv.Atoi(params[1])
+		cal.Month,_ = strconv.Atoi(params[2])
 	}
+	prev := cal.PrevMonth()
+	next := cal.NextMonth()
+	current, _ := strconv.Atoi(goal.Get("current"))
+	longest, _ := strconv.Atoi(goal.Get("longest"))
 	action.Assign("name", goal.Get("title"))
-	action.Assign("year", fmt.Sprint("%04d", year))
-	action.Assign("month", fmt.Sprint("%02d", month))
-	action.Assign("prev_url", "/" + params[0]) // FIXME
-	action.Assign("next_url", "/" + params[0]) // FIXME
+	action.Assign("year", fmt.Sprint("%04d", cal.Year))
+	action.Assign("month", fmt.Sprint("%02d", cal.Month))
+	action.Assign("prev_url", "/" + params[0] + "/" + prev.String())
+	action.Assign("next_url", "/" + params[0] + "/" + next.String())
+	action.Assign("current", goldorak.Pluralize(current, "jour"))
+	action.Assign("longest", goldorak.Pluralize(longest, "jour"))
 	action.Assign("rows", "") // FIXME
-	action.Assign("current", goal.Get("current") + " jours") // TODO Pluralize
-	action.Assign("longest", goal.Get("longest") + " jours") // TODO Pluralize
 	action.Template("calendar")
 }
 
@@ -44,6 +43,8 @@ func createGoal(action *goldorak.Action, name string) {
 	s := goldorak.Parameterize(name)
 	g := goal.Create(s)
 	g.Set("name", name)
+	g.Set("current", "0")
+	g.Set("longest", "0")
 	action.Redirect("/" + s)
 }
 
