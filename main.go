@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"goldorak"
 	"strconv"
 	"strings"
@@ -12,20 +13,20 @@ var goal *goldorak.Model
 // Show the calendar
 func showCalendar(action *goldorak.Action, cal *Calendar) {
 	action.Assign("name", cal.Title())
-	action.Assign("year", cal.Year)
+	action.Assign("year", fmt.Sprint(cal.Year))
 	action.Assign("month", cal.MonthAsText())
 	action.Assign("prev_url", "/" + cal.Goal.Param + "/" + cal.PrevMonth().String())
 	action.Assign("next_url", "/" + cal.Goal.Param + "/" + cal.NextMonth().String())
 	action.Assign("current", goldorak.Pluralize(cal.CurrentStreak(), "jour"))
 	action.Assign("longest", goldorak.Pluralize(cal.LongestStreak(), "jour"))
-	action.Assign("rows", false) // FIXME
+	action.Assign("rows", "") // FIXME
 	action.Template("calendar")
 }
 
 // Form for creating a new goal
 func newGoal(action *goldorak.Action, param string, public bool) {
 	action.Assign("name", param)
-	action.Assign("public", public)
+	action.Assign("public", "") // FIXME
 	action.Template("new_goal")
 }
 
@@ -36,6 +37,11 @@ func createGoal(action *goldorak.Action, name string, public bool) {
 	g.Set("current", "0")
 	g.Set("longest", "0")
 	action.Redirect("/" + g.Param)
+}
+
+// Home Page
+func homepage(action *goldorak.Action) {
+	action.Template("homepage")
 }
 
 func main() {
@@ -58,7 +64,8 @@ func main() {
 	})
 
 	// Show a calendar
-	goldorak.Get("/.*(/[0-9]+/[0-9]+)?", func(action *goldorak.Action, params []string) {
+	//goldorak.Get("/.*(/[0-9]+/[0-9]+)?", func(action *goldorak.Action, params []string) {
+	goldorak.Get("/.*", func(action *goldorak.Action, params []string) {
 		g := goal.Find(params[0])
 		if g != nil {
 			cal := NewCal(g)
@@ -70,10 +77,15 @@ func main() {
 		} else {
 			newGoal(action, params[0], true)
 		}
-	});
+	})
 
-	// Create a calendar
-	goldorak.Post("/calendars", func(action *goldorak.Action, params []string) {
+	// Show the form for creating a new goal
+	goldorak.Get("/objectifs/nouveau", func(action *goldorak.Action, params []string) {
+		newGoal(action, "", true)
+	})
+
+	// Create a goal
+	goldorak.Post("/objectifs", func(action *goldorak.Action, params []string) {
 		p_public := action.Param("public")
 		public   := len(p_public) > 0 && p_public[0] == "1"
 		p_name   := action.Param("name")
@@ -86,7 +98,12 @@ func main() {
 		} else {
 			newGoal(action, name, public)
 		}
-	});
+	})
+
+	// Home Page
+	goldorak.Get("/", func(action *goldorak.Action, params []string) {
+		homepage(action)
+	})
 
 	/************/
 	/* Let's go */
